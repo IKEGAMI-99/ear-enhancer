@@ -121,11 +121,14 @@ class AudioEngine(
             )
 
             // Bundled-model flavor, no network and no server inference.
-            model = NativeDeepFilterNet(context.applicationContext)
-            nativeModel = model
+            val native = NativeDeepFilterNet(context.applicationContext)
+            model = native
+            nativeModel = native
             val ready = withTimeout(45_000L) {
                 suspendCancellableCoroutine<NativeDeepFilterNet> { continuation ->
-                    model.onModelLoaded { if (continuation.isActive) continuation.resume(model) }
+                    native.onModelLoaded {
+                        if (continuation.isActive) continuation.resume(native)
+                    }
                 }
             }
             if (stopped) return
